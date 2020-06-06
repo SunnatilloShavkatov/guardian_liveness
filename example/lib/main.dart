@@ -1,58 +1,145 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+
 import 'package:guardian_liveness/guardian_liveness.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(DemoLivenessApp());
 }
 
-class MyApp extends StatefulWidget {
+class DemoLivenessApp extends StatelessWidget {
+
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: [
+        DefaultMaterialLocalizations.delegate,
+      ],
+      home: DemoPage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+class DemoPage extends StatefulWidget {
+  @override
+  _DemoPageState createState() => _DemoPageState();
+}
+
+class _DemoPageState extends State<DemoPage> {
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await GuardianLiveness.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      GuardianLiveness.isDeviceSupportLiveness().then((isSupported) async {
+        try {
+          await GuardianLiveness.initLiveness();
+          setState(() {
+            _canDetectLiveness = isSupported;
+          });
+        } catch (e) {
+          _showError(e,);
+        }
+      },);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Demo Liveness App',),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0,),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0,),
+                child: Container(
+                  alignment: Alignment.center,
+                  constraints: BoxConstraints.loose(
+                    Size.square( _bitmap != null ? 300.0 : 0.0, ),
+                  ),
+                  child: Builder(
+                    builder: (_) {
+                      if (_bitmap == null) {
+                        return Container();
+                      }
+                      return Image.memory(_bitmap, fit: BoxFit.cover,);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            RaisedButton(
+              child: Text("Start Liveness Detection",),
+              onPressed: _canDetectLiveness ? _startLivenessDetection : null,
+            ),
+            _canDetectLiveness ? Container() : Padding(
+              padding: const EdgeInsets.all(16.0,),
+              child: Text(
+                "Your device doesn't support Liveness Detection",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.0, color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  bool _canDetectLiveness = false;
+  Uint8List _bitmap;
+
+  void _startLivenessDetection() {
+    GuardianLiveness.detectLiveness().then((result) {
+      print("Base64 Result: ${result.base64String}",);
+      setState(() {
+        _bitmap = result.bitmap;
+      });
+    },).catchError((e) {
+      _showError(e,);
+    },);
+  }
+
+  void _showError(var e) {
+    if (e is LivenessException) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(e.code,),
+          content: Text(e.message,),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Close",),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(LivenessException.ERROR_UNDEFINED,),
+          content: Text(e.toString(),),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Close",),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

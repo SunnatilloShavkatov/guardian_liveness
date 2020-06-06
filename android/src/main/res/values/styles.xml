@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="liveness_transparent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">#5BC413</item>
         <item name="android:background">#00000000</item>

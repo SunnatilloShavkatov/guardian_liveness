@@ -1,15 +1,16 @@
 package lab.neruno.guardian_liveness.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import ai.advance.common.IMediaPlayer;
 import ai.advance.liveness.lib.LivenessResult;
-import ai.advance.liveness.sdk.R;
+import lab.neruno.guardian_liveness.R;
 
 public class ResultActivity extends AppCompatActivity {
     private ImageView mResultImageView;

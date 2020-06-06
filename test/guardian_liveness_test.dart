@@ -17,7 +17,7 @@ void main() {
     channel.setMockMethodCallHandler(null);
   });
 
-  test('getPlatformVersion', () async {
-    expect(await GuardianLiveness.platformVersion, '42');
+  test('isDeviceSupportLiveness', () async {
+    expect(await GuardianLiveness.isDeviceSupportLiveness(), true,);
   });
 }

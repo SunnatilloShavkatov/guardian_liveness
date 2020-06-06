@@ -33,7 +33,7 @@ abstract class GuardianLiveness {
 
   static Future<void> initLiveness() async {
     final isSupported = await isDeviceSupportLiveness();
-    if (isSupported) {
+    if (!isSupported) {
       throw LivenessException._(
         LivenessException.ERROR_DEVICE_NOT_SUPPORT,
         "Your device doesn't support Liveness Detection.",
@@ -45,10 +45,11 @@ abstract class GuardianLiveness {
   static Future<LivenessResult> detectLiveness() async {
     try {
       final result = await _guardedCallForUnsupportedPlatform<dynamic>(
-        await _channel.invokeMethod<dynamic>(_DETECT_LIVENESS,),
+        _channel.invokeMethod<dynamic>(_DETECT_LIVENESS,),
       );
+      final data = Map<String, dynamic>.from(result,);
       return LivenessResult._(
-        result["base64Str"], result["bitmap"],
+        data["base64Str"], data["bitmap"],
       );
     } on PlatformException catch (ex) {
       throw LivenessException._(ex.code, ex.message,);
