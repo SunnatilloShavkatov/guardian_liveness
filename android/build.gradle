@@ -2,7 +2,10 @@ group 'lab.neruno.guardian_liveness'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.3.72'
+    ext {
+        kotlin_version = '1.3.72'
+        ktor_version = '1.3.2'
+    }
     repositories {
         google()
         jcenter()
@@ -27,6 +30,8 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+sourceCompatibility = 1.8
+
 android {
     compileSdkVersion 29
 
@@ -39,6 +44,9 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -48,4 +56,6 @@ dependencies {
 
     api(name: 'guardian_core_v1.7', ext: 'aar')
     api(name: 'liveness_lib_v1.2.0', ext: 'aar')
+
+    implementation "io.ktor:ktor-server-core:$ktor_version"
 }

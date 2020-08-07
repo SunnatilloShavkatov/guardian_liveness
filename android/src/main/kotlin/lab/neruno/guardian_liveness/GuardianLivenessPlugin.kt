@@ -16,7 +16,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import lab.neruno.guardian_liveness.activity.LivenessActivity
-import lab.neruno.guardian_liveness.activity.ResultActivity
 import java.io.ByteArrayOutputStream
 
 /** GuardianLivenessPlugin */
@@ -82,11 +81,12 @@ class GuardianLivenessPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     private const val CHANNEL_NAME = "guardian_liveness"
 
     const val REQUEST_CODE_LIVENESS = 1000
-    const val REQUEST_CODE_RESULT_PAGE = 1001
+//    const val REQUEST_CODE_RESULT_PAGE = 1001
 
     private const val IS_DEVICE_SUPPORT_LIVENESS = "isDeviceSupportLiveness"
     private const val INIT_LIVENESS = "initLiveness"
     private const val DETECT_LIVENESS = "detectLiveness"
+//    private const val EVALUATE_LIVENESS = "evaluateLiveness"
 
     @JvmStatic
     fun registerWith(registrar: Registrar) {
@@ -102,12 +102,17 @@ class GuardianLivenessPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         result.success( GuardianLivenessDetectionSDK.isDeviceSupportLiveness() )
       }
       INIT_LIVENESS -> {
-        initLiveness(result)
+        val accessKey = call.argument<String>("accessKey")
+        val secretKey = call.argument<String>("secretKey")
+        initLiveness(accessKey, secretKey, result)
       }
       DETECT_LIVENESS -> {
         livenessResult = result
         detectLiveness()
       }
+//      EVALUATE_LIVENESS -> {
+//
+//      }
       else -> {
         result.notImplemented()
       }
@@ -118,7 +123,12 @@ class GuardianLivenessPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     channel.setMethodCallHandler(null)
   }
 
-  private fun initLiveness(result: Result) {
+  private fun initLiveness(accessKey: String?, secretKey: String?, result: Result) {
+//    if (accessKey != null && secretKey != null) {
+//      GuardianLivenessDetectionSDK.init(application, accessKey, secretKey)
+//    }
+
+//    GuardianLivenessDetectionSDK.initGuardianSDK(application)
     GuardianLivenessDetectionSDK.initOffLine(application)
     GuardianLivenessDetectionSDK.letSDKHandleCameraPermission()
     result.success(null)
@@ -153,4 +163,18 @@ class GuardianLivenessPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       this.livenessResult?.error(errorCode, errorMessage, null)
     }
   }
+
+  ///
+  /// SUCCESS	pay OK
+  /// ERROR	free Server error
+  /// NO_AUTHORIZATION	free API authorization failed
+  /// API_ACCESS_DENIED	free API not found or you have no access to API
+  /// EMPTY_PARAMETER_ERROR	free Parameter should not be empty
+  /// INSUFFICIENT_BALANCE	free Insufficient balance in your account please recharge your account
+  /// SERVICE_BUSY	free The service is busy, please query later
+  /// QUERY_LIMIT_REACHED	free Free query limit is reached, please query later
+  ///
+//  private fun evaluateLiveness(result: MethodChannel.Result) {
+//
+//  }
 }
