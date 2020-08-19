@@ -83,4 +83,7 @@ class LivenessException implements Exception {
   final String message;
 
   LivenessException._(this.code, this.message,);
+
+  @override
+  String toString() => "($runtimeType):\ncode: $code\nmessage: $message";
 }
