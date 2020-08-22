@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - guardian_liveness (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - guardian_liveness (from `.symlinks/plugins/guardian_liveness/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  guardian_liveness:
+    :path: ".symlinks/plugins/guardian_liveness/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  guardian_liveness: 13b69de5f05fc79b1b8edc4737541fed4d8f4bd1
+
+PODFILE CHECKSUM: de38a37a75cf94b1b8c9b785b78d504f3a50055b
+
+COCOAPODS: 1.6.2

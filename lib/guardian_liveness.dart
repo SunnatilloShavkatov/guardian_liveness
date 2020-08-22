@@ -16,7 +16,7 @@ const _DETECT_LIVENESS = "detectLiveness";
 abstract class GuardianLiveness {
 
   static Future<T> _guardedCallForUnsupportedPlatform<T>(Future<T> functionCall,) async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       throw LivenessException._(
         LivenessException.ERROR_DEVICE_NOT_SUPPORT,
         "Your device doesn't support Liveness Detection.",
