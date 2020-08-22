@@ -124,11 +124,6 @@ class GuardianLivenessPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun initLiveness(accessKey: String?, secretKey: String?, result: Result) {
-//    if (accessKey != null && secretKey != null) {
-//      GuardianLivenessDetectionSDK.init(application, accessKey, secretKey)
-//    }
-
-//    GuardianLivenessDetectionSDK.initGuardianSDK(application)
     GuardianLivenessDetectionSDK.initOffLine(application)
     GuardianLivenessDetectionSDK.letSDKHandleCameraPermission()
     result.success(null)
