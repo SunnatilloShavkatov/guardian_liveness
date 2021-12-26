@@ -2,6 +2,7 @@ package io.flutter.plugins;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import io.flutter.Log;
 
 import io.flutter.embedding.engine.FlutterEngine;
 
@@ -12,7 +13,12 @@ import io.flutter.embedding.engine.FlutterEngine;
  */
 @Keep
 public final class GeneratedPluginRegistrant {
+  private static final String TAG = "GeneratedPluginRegistrant";
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
-    flutterEngine.getPlugins().add(new lab.neruno.guardian_liveness.GuardianLivenessPlugin());
+    try {
+      flutterEngine.getPlugins().add(new lab.neruno.guardian_liveness.GuardianLivenessPlugin());
+    } catch(Exception e) {
+      Log.e(TAG, "Error registering plugin guardian_liveness, lab.neruno.guardian_liveness.GuardianLivenessPlugin", e);
+    }
   }
 }

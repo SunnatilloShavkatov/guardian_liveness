@@ -9,7 +9,6 @@ void main() {
 }
 
 class DemoLivenessApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,70 +26,90 @@ class DemoPage extends StatefulWidget {
 }
 
 class _DemoPageState extends State<DemoPage> {
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      GuardianLiveness.isDeviceSupportLiveness().then((isSupported) async {
-        try {
-          await GuardianLiveness.initLiveness();
-          setState(() {
-            _canDetectLiveness = isSupported;
-          });
-        } catch (e) {
-          _showError(e,);
-        }
-      },);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      GuardianLiveness.isDeviceSupportLiveness().then(
+        (isSupported) async {
+          try {
+            await GuardianLiveness.initLiveness();
+            setState(() {
+              _canDetectLiveness = isSupported ?? false;
+            });
+          } catch (e) {
+            _showError(
+              e,
+            );
+          }
+        },
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Demo Liveness App',),
+        title: const Text(
+          'Demo Liveness App',
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0,),
+        padding: const EdgeInsets.all(
+          24.0,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0,),
+                padding: const EdgeInsets.all(
+                  16.0,
+                ),
                 child: Container(
                   alignment: Alignment.center,
                   constraints: BoxConstraints.loose(
-                    Size.square( _bitmap != null ? 300.0 : 0.0, ),
+                    Size.square(
+                      _bitmap != null ? 300.0 : 0.0,
+                    ),
                   ),
                   child: Builder(
                     builder: (_) {
                       if (_bitmap == null) {
                         return Container();
                       }
-                      return Image.memory(_bitmap, fit: BoxFit.cover,);
+                      return Image.memory(
+                        _bitmap,
+                        fit: BoxFit.cover,
+                      );
                     },
                   ),
                 ),
               ),
             ),
             RaisedButton(
-              child: Text("Start Liveness Detection",),
+              child: Text(
+                "Start Liveness Detection",
+              ),
               onPressed: _canDetectLiveness ? _startLivenessDetection : null,
             ),
-            _canDetectLiveness ? Container() : Padding(
-              padding: const EdgeInsets.all(16.0,),
-              child: Text(
-                "Your device doesn't support Liveness Detection",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18.0, color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            _canDetectLiveness
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.all(
+                      16.0,
+                    ),
+                    child: Text(
+                      "Your device doesn't support Liveness Detection",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -98,17 +117,25 @@ class _DemoPageState extends State<DemoPage> {
   }
 
   bool _canDetectLiveness = false;
-  Uint8List _bitmap;
+  late Uint8List _bitmap;
 
   void _startLivenessDetection() {
-    GuardianLiveness.detectLiveness().then((result) {
-      print("Base64 Result: ${result.base64String}",);
-      setState(() {
-        _bitmap = result.bitmap;
-      });
-    },).catchError((e) {
-      _showError(e,);
-    },);
+    GuardianLiveness.detectLiveness().then(
+      (result) {
+        print(
+          "Base64 Result: ${result.base64String}",
+        );
+        setState(() {
+          _bitmap = result.bitmap;
+        });
+      },
+    ).catchError(
+      (e) {
+        _showError(
+          e,
+        );
+      },
+    );
   }
 
   void _showError(var e) {
@@ -116,11 +143,17 @@ class _DemoPageState extends State<DemoPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(e.code,),
-          content: Text(e.message,),
+          title: Text(
+            e.code,
+          ),
+          content: Text(
+            e.message,
+          ),
           actions: <Widget>[
             FlatButton(
-              child: Text("Close",),
+              child: Text(
+                "Close",
+              ),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -130,11 +163,17 @@ class _DemoPageState extends State<DemoPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(LivenessException.ERROR_UNDEFINED,),
-          content: Text(e.toString(),),
+          title: Text(
+            LivenessException.ERROR_UNDEFINED,
+          ),
+          content: Text(
+            e.toString(),
+          ),
           actions: <Widget>[
             FlatButton(
-              child: Text("Close",),
+              child: Text(
+                "Close",
+              ),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
